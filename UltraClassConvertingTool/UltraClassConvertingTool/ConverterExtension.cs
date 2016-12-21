@@ -1,8 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#region Copyright
+//Copyright 2016 Morozov Dmitry
+
+//   Licensed under the Apache License, Version 2.0 (the "License");
+//   you may not use this file except in compliance with the License.
+//   You may obtain a copy of the License at
+
+//       http://www.apache.org/licenses/LICENSE-2.0
+
+//   Unless required by applicable law or agreed to in writing, software
+//   distributed under the License is distributed on an "AS IS" BASIS,
+//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//   See the License for the specific language governing permissions and
+//   limitations under the License.
+#endregion Copyright
+using System;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace UltraClassConvertingTool
 {
@@ -12,7 +25,7 @@ namespace UltraClassConvertingTool
     public static class ConverterExtension
     {
         #region Static      
-            
+
         #region Methods
 
         /// <summary>
@@ -23,6 +36,7 @@ namespace UltraClassConvertingTool
         /// <typeparam name="T">Generic typed parameter.</typeparam>
         /// <param name="obj">Object to convert.</param>
         /// <returns>Returns new object of T.</returns>
+        /// <exception cref="System.MissingMethodException"
         public static T To<T>(this Object obj)
         {
             T instance = (T)Activator.CreateInstance(typeof(T));
@@ -49,6 +63,7 @@ namespace UltraClassConvertingTool
         /// <param name="obj">Object to convert.</param>
         /// <param name="stictFlag">Stict flag.</param>
         /// <returns>Returns new object of T.</returns>
+        /// <exception cref="System.MissingMethodException"
         public static T To<T>(this Object obj, StictFlags stictFlag)
         {
             if (stictFlag == StictFlags.Forced)
@@ -73,7 +88,7 @@ namespace UltraClassConvertingTool
                     }
                 }
                 return instance;
-            }            
+            }
         }
         #endregion Methods
 
@@ -109,20 +124,20 @@ namespace UltraClassConvertingTool
         /// <returns>Returns true if value was setted, else returns false.</returns>
         private static bool _SetPropValue(this Object obj, String name, Object value)
         {
-            bool fl = false;    
+            bool fl = false;
             foreach (String part in name.Split('.'))
             {
                 if (obj == null) return false;
                 Type type = obj.GetType();
                 PropertyInfo info = type.GetRuntimeProperty(part);
                 if (info == null) return false;
-                if (info.PropertyType == value.GetType())
+                if (value != null && info.PropertyType == value.GetType())
                 {
                     info.SetValue(obj, value);
-                    fl = true;                 
-                }                
+                    fl = true;
+                }
             }
-            return fl;            
+            return fl;
         }
 
         #endregion Utilities
@@ -155,7 +170,7 @@ namespace UltraClassConvertingTool
         /// <summary>
         /// Some inherited from "Exception" consructors.
         /// </summary>
-        public ConverterExtensionException():base()
+        public ConverterExtensionException() : base()
         {
         }
 
@@ -198,7 +213,7 @@ namespace UltraClassConvertingTool
         /// <summary>
         /// Empty constructor. Standart exception message will be thrown.
         /// </summary>
-        public PropertyNotSettedException():base(ERROR_MSG)
+        public PropertyNotSettedException() : base(ERROR_MSG)
         {
         }
 
@@ -208,7 +223,7 @@ namespace UltraClassConvertingTool
         /// </summary>
         /// <param name="propertyName"></param>
         public PropertyNotSettedException(string propertyName)
-            :base(ERROR_MSG+" Property name:" + propertyName)
+            : base(ERROR_MSG + " Property name:" + propertyName)
         {
         }
 
